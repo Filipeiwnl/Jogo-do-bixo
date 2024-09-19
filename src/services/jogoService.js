@@ -1,52 +1,46 @@
-const Jogo = require('../models/Jogo')
-const Bicho = require('../models/Bicho')
-const Numero = require('../models/Numero')
-const Aposta = require('../models/Aposta')
+import Jogo from '../models/Jogo.js';
+import Aposta from '../models/Aposta.js';
+import Numero from '../models/Numero.js';
 
-const ResolverJogo = async(jogoId) => {
-    const jogo = await jogo.findById(jogoId).populate('numeroEscolhido')
-    if(!jogo){
-        throw new Error("Jogo não encontrado");
+export async function resolverJogo(jogoId) {
+  const jogo = await Jogo.findById(jogoId).populate('numeroEscolhido');
 
-    }
-    const numerosGerados = gerarNumerosAleatorios()
-    jogo.vencedores = await Numero.find({numero: {$in: numerosGerados}})
+  if (!jogo) {
+    throw new Error('Jogo não encontrado');
+  }
 
-    await jogo.save()
+  // Gerar números aleatórios
+  const numerosGerados = gerarNumerosAleatorios();
+  jogo.vencedores = await Numero.find({ numero: { $in: numerosGerados } });
 
-    await calcularPremios(jogo)
+  await jogo.save();
 
-}   
-
-
-const gerarNumerosAleatorios = () => {
-    const numeros = new Set()
-    while(numeros.size < 3){
-        numeros.add(Math.floor(Math.random() * 100)+1)
-    }
-    return Array.from(numeros)
-
+  // Calcular prêmios para apostas vencedoras
+  await calcularPremios(jogo);
 }
 
+function gerarNumerosAleatorios() {
+  const numeros = new Set();
+  while (numeros.size < 3) { // Exemplo: gerar 3 números
+    numeros.add(Math.floor(Math.random() * 100) + 1); // Números de 1 a 100
+  }
+  return Array.from(numeros);
+}
 
-const calcularPremios = async(Jogo) => {
+async function calcularPremios(jogo) {
+  const apostas = await Aposta.find({ jogo: jogo._id }).populate('numeros');
 
-    const apostas = await Aposta.find({jogo: jogo._id}).populate('numeros')
-
-    apostas.forEach(aposta => {
-        const vencedores = aposta.filter(numero=> Jogo.vencedores.includes(numero._id))
-        if(vencedores.length > 0 ){
-            const premio =  calcularPremios(aposta.valor, vencedores.length)
-            aposta.retorno = premio
-            aposta.save()
-        }
-
-
-    })
+  apostas.forEach(aposta => {
+    const vencedores = aposta.numeros.filter(numero => jogo.vencedores.includes(numero._id));
+    if (vencedores.length > 0) {
+      const premio = calcularValorPremio(aposta.valor, vencedores.length); // Lógica para calcular o prêmio
+      aposta.retorno = premio;
+      aposta.save();
+    }
+  });
 }
 
 function calcularValorPremio(valorAposta, quantidadeVencedores) {
-    return valorAposta * 10 * quantidadeVencedores;
-  }
-
-  module.exports = { resolverJogo };
+  // Exemplo: prêmio é 10 vezes o valor da aposta por número vencedor
+  return valorAposta * 10 * quantidadeVencedores;
+}

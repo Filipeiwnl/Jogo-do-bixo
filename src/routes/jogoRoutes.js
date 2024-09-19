@@ -1,7 +1,12 @@
-const express = require('express');
+import express from 'express';
+import { criarJogo, resolverJogo } from '../controllers/jogoController.js';
+
 const router = express.Router();
-const jogoController = require('../controllers/jogoController');
 
-router.post('/resolver/:jogoId', jogoController.resolverJogo);
+// Rota para criar um jogo
+router.post('/', criarJogo); // Certifique-se de que a função `criarJogo` está implementada
 
-module.exports = router;
+// Rota para resolver um jogo
+router.post('/resolver/:jogoId', resolverJogo);
+
+export default router;

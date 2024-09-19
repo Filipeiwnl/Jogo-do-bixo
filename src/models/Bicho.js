@@ -1,8 +1,7 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose';
 
 const BichoSchema = new mongoose.Schema({
-    nome:{type: String , required: true}
+  nome: { type: String, required: true }
+});
 
-})
-
-module.exports = mongoose.model('Bicho', BichoSchema)
+export default mongoose.model('Bicho', BichoSchema);

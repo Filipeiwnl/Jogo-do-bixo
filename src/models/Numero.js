@@ -1,13 +1,8 @@
-const mongoose = require('mongoose')
-const Bicho = require('./Bicho')
-
+import mongoose from 'mongoose';
 
 const NumeroSchema = new mongoose.Schema({
-    numero:{type: Number , required: true},
-    bicho:{type:mongoose.Schema.Types.ObjectId, 'ref': Bicho  }
+  numero: { type: Number, required: true },
+  bicho: { type: mongoose.Schema.Types.ObjectId, ref: 'Bicho' }
+});
 
-})
-
-module.exports = mongoose.model('Numero', NumeroSchema)
-
-module.exports = mongoose.model('Numero', NumeroSchema)
+export default mongoose.model('Numero', NumeroSchema);

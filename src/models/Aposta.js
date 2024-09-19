@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const ApostaSchema = new mongoose.Schema({
   valor: { type: Number, required: true },
@@ -9,4 +9,4 @@ const ApostaSchema = new mongoose.Schema({
   jogo: { type: mongoose.Schema.Types.ObjectId, ref: 'Jogo' }
 });
 
-module.exports = mongoose.model('Aposta', ApostaSchema);
+export default mongoose.model('Aposta', ApostaSchema);

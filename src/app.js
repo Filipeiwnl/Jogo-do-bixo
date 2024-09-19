@@ -1,6 +1,10 @@
-const express = require('express');
-const connectDB = require('./config/db');
-const jogoRoutes = require('./routes/jogoRoutes');
+import express from 'express';
+import connectDB from './config/db.js';
+import jogoRoutes from './routes/jogoRoutes.js';
+import dotenv from 'dotenv';
+
+// Configurar dotenv
+dotenv.config();
 
 const app = express();
 app.use(express.json());
